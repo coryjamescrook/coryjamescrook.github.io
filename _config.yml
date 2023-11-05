@@ -28,9 +28,11 @@ url: "https://coryjamescrook.github.io" # the base hostname & protocol for your 
 github_username:  coryjamescrook
 
 # Build settings
-theme: jekyll-theme-hydejack
+# theme: jekyll-theme-hydejack
+remote_theme: hydecorp/hydejack
 plugins:
   - jekyll-feed
+  - jekyll-remote-theme
 
 # Exclude from processing.
 # The following items will not be processed, by default.
