@@ -24,7 +24,7 @@ All content lives in the page's data file (`data/home.js` or `data/collections/<
     - **Do not duplicate events in `home.js`** — the collection file is the single source of truth.
 - **Collection page**: `{ "kind": "collection", id, title, description, events: [ ... ] }` — the events array here is the authoritative copy for that collection.
 
-`app.js` renders Upcoming vs. Archive per event by comparing its date+time against the current time. **TBD showtimes**: `date` and/or `time` may be `null`/`undefined` to mean the showtime is not yet decided; the card displays a `TBD` stamp (or partial `TBD` for only one of the two) in place of the real value, such events are never archived (treated as upcoming, sorted last), and the "Add to Calendar" button is hidden for them.
+`app.js` renders Upcoming vs. Archive per event by comparing its date+time against the current time. Ordering is always chronological ascending (date, then time) via `sortedEvents`. **TBD showtimes**: `date` and/or `time` may be `null`/`undefined` to mean the showtime is not yet decided; the card displays a `TBD` stamp (or partial `TBD` for only one of the two) in place of the real value, such events are never archived (treated as upcoming) and always sort last, tied broken alphabetically by title, and the "Add to Calendar" button is hidden for them.
 
 ### Adding content — do this in order
 

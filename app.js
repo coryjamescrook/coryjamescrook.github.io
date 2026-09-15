@@ -64,8 +64,18 @@
     return out;
   }
 
+  // Chronological ascending (date, then time). TBD events (missing date
+  // or time) always sort last and tie-break by title, alphabetically.
   function sortedEvents(events) {
-    return (events || []).slice().sort((a, b) => parseEventDate(a) - parseEventDate(b));
+    const byTitle = (a, b) => (a.title || '').localeCompare(b.title || '');
+    return (events || []).slice().sort((a, b) => {
+      const aTbd = isTBD(a);
+      const bTbd = isTBD(b);
+      if (aTbd !== bTbd) return aTbd ? 1 : -1;
+      if (aTbd) return byTitle(a, b);
+      const diff = parseEventDate(a) - parseEventDate(b);
+      return diff !== 0 ? diff : byTitle(a, b);
+    });
   }
 
   function collectionRange(events) {
