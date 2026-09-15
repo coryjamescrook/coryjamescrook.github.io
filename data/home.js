@@ -28,10 +28,9 @@ window.CROOKFLIX_DATA = (function() {
       "kind": "event",
       "id": "evt-009",
       "title": "Inception",
-      "date": "2026-09-26",
-      "time": "21:00",
       "description": "A thief who steals secrets through dream-sharing is given the inverse task: planting an idea into the mind of a C.E.O.",
-      "trailer": "YoHD9XEInc0"
+      "trailer": "YoHD9XEInc0",
+      "datetime": "2026-09-26T21:00:00-05:00"
     },
     {
       "kind": "collection",

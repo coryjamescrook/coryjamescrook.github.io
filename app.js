@@ -28,25 +28,52 @@
   }
 
   // ─── DATE UTILITIES ──────────────────────────
-  // date and time may be null/undefined — the showtime is then TBD.
+  // Events store an ISO 8601 datetime (e.g. "2026-10-02T19:00:00-05:00")
+  // with a fixed UTC offset. datetime may be null/undefined (unscheduled);
+  // those events are TBD. Dates/times render in the viewer's browser-local
+  // timezone.
+  function eventDateTime(evt) {
+    if (evt && evt.datetime) {
+      const d = new Date(evt.datetime);
+      if (!isNaN(d.getTime())) return d;
+    }
+    return null;
+  }
+
+  // The showtime is TBD when datetime is null/undefined.
   function isTBD(evt) {
-    return !evt.date || !evt.time;
+    return !eventDateTime(evt);
   }
 
-  function parseEventDate(evt) {
-    if (!evt.date) return new Date(Infinity); // TBD sorts last, never past
-    return new Date(evt.date + 'T' + (evt.time || '00:00'));
+  function dateKey(evt) {
+    const d = eventDateTime(evt);
+    return d ? d.getTime() : Infinity; // TBD sorts last, never past
   }
 
-  function formatDate(dateStr) {
-    const d = new Date(dateStr);
+  function formatDate(d) {
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
   }
 
+  function formatTime(d) {
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
+  function eventDateLabel(evt) {
+    const d = eventDateTime(evt);
+    return d ? formatDate(d) : 'TBD';
+  }
+
+  function eventTimeLabel(evt) {
+    const d = eventDateTime(evt);
+    return d ? formatTime(d) : 'TBD';
+  }
+
   function isPast(evt) {
-    if (!evt.date) return false; // TBD is never archived
-    return parseEventDate(evt) < new Date();
+    const d = eventDateTime(evt);
+    return !!d && d < new Date(); // TBD is never archived
   }
 
   // ─── POLYMORPHIC HELPERS ─────────────────────
@@ -64,8 +91,8 @@
     return out;
   }
 
-  // Chronological ascending (date, then time). TBD events (missing date
-  // or time) always sort last and tie-break by title, alphabetically.
+  // Chronological ascending. TBD events (no datetime) always sort last and
+  // tie-break by title, alphabetically.
   function sortedEvents(events) {
     const byTitle = (a, b) => (a.title || '').localeCompare(b.title || '');
     return (events || []).slice().sort((a, b) => {
@@ -73,16 +100,16 @@
       const bTbd = isTBD(b);
       if (aTbd !== bTbd) return aTbd ? 1 : -1;
       if (aTbd) return byTitle(a, b);
-      const diff = parseEventDate(a) - parseEventDate(b);
+      const diff = dateKey(a) - dateKey(b);
       return diff !== 0 ? diff : byTitle(a, b);
     });
   }
 
   function collectionRange(events) {
-    const dated = events.filter(e => e.date);
+    const dated = events.filter(e => eventDateTime(e));
     if (dated.length === 0) return 'TBD';
-    const first = formatDate(dated[0].date);
-    const last = formatDate(dated[dated.length - 1].date);
+    const first = eventDateLabel(dated[0]);
+    const last = eventDateLabel(dated[dated.length - 1]);
     return first === last ? first : `${first} — ${last}`;
   }
 
@@ -92,8 +119,8 @@
   }
 
   function buildIcs(evt) {
-    const d = (evt.date || '0001-01-01').split('-');
-    const t = (evt.time || '0000').split(':');
+    const d = eventDateTime(evt);
+    const dt = d ? d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z' : '';
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     const lines = [
       'BEGIN:VCALENDAR',
@@ -102,7 +129,7 @@
       'BEGIN:VEVENT',
       `UID:${evt.id || 'event'}@crookflix`,
       `DTSTAMP:${dtstamp}`,
-      `DTSTART:${d[0]}${d[1]}${d[2]}T${t[0]}${t[1]}00`,
+      `DTSTART:${dt}`,
       `SUMMARY:${icsEscape(evt.title)}`
     ];
     if (evt.description) lines.push(`DESCRIPTION:${icsEscape(evt.description)}`);
@@ -131,13 +158,13 @@
     card.style.transitionDelay = `${i * 0.1}s`;
 
     card.innerHTML = `
-      <div class="event-date-stamp">${tbd ? 'TBD' : formatDate(evt.date) + (past ? ' · PAST' : '')}</div>
+      <div class="event-date-stamp">${tbd ? 'TBD' : eventDateLabel(evt) + (past ? ' · PAST' : '')}</div>
       <div class="event-card-inner">
         <span class="event-badge">${(evt.type || 'MOVIE').toUpperCase()}</span>
         <h3 class="event-title">${evt.title}</h3>
         <div class="event-meta">
-          <span>📅 ${evt.date ? formatDate(evt.date) : 'TBD'}</span>
-          <span>🕐 ${evt.time || 'TBD'}</span>
+          <span>📅 ${eventDateLabel(evt)}</span>
+          <span>🕐 ${eventTimeLabel(evt)}</span>
         </div>
         <p class="event-desc">${evt.description || ''}</p>
         <div class="event-actions">
@@ -219,7 +246,7 @@
       }
     });
 
-    blocks.sort((a, b) => parseEventDate(b.events[0]) - parseEventDate(a.events[0]));
+    blocks.sort((a, b) => dateKey(b.events[0]) - dateKey(a.events[0]));
 
     if (blocks.length === 0 && standalone.length === 0) {
       empty.style.display = 'block';
@@ -231,7 +258,7 @@
       list.appendChild(buildCollectionCard(block, i, { archived: true }));
     });
 
-    standalone.sort((a, b) => parseEventDate(b) - parseEventDate(a));
+    standalone.sort((a, b) => dateKey(b) - dateKey(a));
     standalone.forEach((evt, i) => {
       list.appendChild(buildEventCard(evt, i + blocks.length));
     });
@@ -242,7 +269,7 @@
     const marquee = document.getElementById('marquee');
     if (!marquee) return;
     const upcoming = events.filter(e => !isPast(e));
-    const text = upcoming.map(e => `● ${e.title} — ${e.date ? formatDate(e.date) : 'TBD'}`).join('  ');
+    const text = upcoming.map(e => `● ${e.title} — ${eventDateLabel(e)}`).join('  ');
     const full = text + '  '.repeat(3) + text;
     marquee.innerHTML = `<span>${full}</span><span>${full}</span>`;
   }
