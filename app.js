@@ -28,9 +28,14 @@
   }
 
   // ─── DATE UTILITIES ──────────────────────────
+  // date and time may be null/undefined — the showtime is then TBD.
+  function isTBD(evt) {
+    return !evt.date || !evt.time;
+  }
+
   function parseEventDate(evt) {
-    const d = new Date(evt.date + 'T' + (evt.time || '00:00'));
-    return d;
+    if (!evt.date) return new Date(Infinity); // TBD sorts last, never past
+    return new Date(evt.date + 'T' + (evt.time || '00:00'));
   }
 
   function formatDate(dateStr) {
@@ -40,6 +45,7 @@
   }
 
   function isPast(evt) {
+    if (!evt.date) return false; // TBD is never archived
     return parseEventDate(evt) < new Date();
   }
 
@@ -63,9 +69,10 @@
   }
 
   function collectionRange(events) {
-    if (events.length === 0) return 'COMING SOON';
-    const first = formatDate(events[0].date);
-    const last = formatDate(events[events.length - 1].date);
+    const dated = events.filter(e => e.date);
+    if (dated.length === 0) return 'TBD';
+    const first = formatDate(dated[0].date);
+    const last = formatDate(dated[dated.length - 1].date);
     return first === last ? first : `${first} — ${last}`;
   }
 
@@ -75,8 +82,8 @@
   }
 
   function buildIcs(evt) {
-    const d = (evt.date || '').split('-');
-    const t = (evt.time || '00:00').split(':');
+    const d = (evt.date || '0001-01-01').split('-');
+    const t = (evt.time || '0000').split(':');
     const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     const lines = [
       'BEGIN:VCALENDAR',
@@ -108,28 +115,29 @@
   // ─── CARD BUILDERS (shared by home + collection pages) ──
   function buildEventCard(evt, i) {
     const past = isPast(evt);
+    const tbd = isTBD(evt);
     const card = document.createElement('div');
     card.className = 'event-card' + (past ? ' past' : '');
     card.style.transitionDelay = `${i * 0.1}s`;
 
     card.innerHTML = `
-      <div class="event-date-stamp">${formatDate(evt.date)}${past ? ' · PAST' : ''}</div>
+      <div class="event-date-stamp">${tbd ? 'TBD' : formatDate(evt.date) + (past ? ' · PAST' : '')}</div>
       <div class="event-card-inner">
         <span class="event-badge">${(evt.type || 'MOVIE').toUpperCase()}</span>
         <h3 class="event-title">${evt.title}</h3>
         <div class="event-meta">
-          <span>📅 ${formatDate(evt.date)}</span>
-          <span>🕐 ${evt.time || 'TBA'}</span>
+          <span>📅 ${evt.date ? formatDate(evt.date) : 'TBD'}</span>
+          <span>🕐 ${evt.time || 'TBD'}</span>
         </div>
         <p class="event-desc">${evt.description || ''}</p>
         <div class="event-actions">
           ${evt.trailer ? `<button class="btn btn-primary" data-trailer="${evt.trailer}">▶ Watch Trailer</button>` : ''}
-          ${past ? '' : '<button class="btn btn-outline cal-btn">📅 Add to Calendar</button>'}
+          ${past || tbd ? '' : '<button class="btn btn-outline cal-btn">📅 Add to Calendar</button>'}
         </div>
       </div>
     `;
 
-    if (!past) {
+    if (!past && !tbd) {
       card.querySelector('.cal-btn').addEventListener('click', () => downloadIcs(evt));
     }
     return card;
@@ -224,7 +232,7 @@
     const marquee = document.getElementById('marquee');
     if (!marquee) return;
     const upcoming = events.filter(e => !isPast(e));
-    const text = upcoming.map(e => `● ${e.title} — ${formatDate(e.date)}`).join('  ');
+    const text = upcoming.map(e => `● ${e.title} — ${e.date ? formatDate(e.date) : 'TBD'}`).join('  ');
     const full = text + '  '.repeat(3) + text;
     marquee.innerHTML = `<span>${full}</span><span>${full}</span>`;
   }

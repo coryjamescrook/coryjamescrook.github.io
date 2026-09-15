@@ -1,6 +1,11 @@
 // Crookflix data — midnight-screams-2025.js
 // Edit this file to change site content.
-window.CROOKFLIX_DATA = {
+// Sets window.CROOKFLIX_COLLECTION (authoritative for this page) and
+// registers the collection in window.CROOKFLIX_COLLECTIONS so the home
+// page (data/home.js) can reuse the same events without duplication.
+(function() {
+  'use strict';
+  const collection = {
   "kind": "collection",
   "id": "col-003",
   "title": "Midnight Screams 2025",
@@ -96,3 +101,7 @@ window.CROOKFLIX_DATA = {
     }
   ]
 };
+  window.CROOKFLIX_COLLECTIONS = window.CROOKFLIX_COLLECTIONS || {};
+  window.CROOKFLIX_COLLECTIONS[collection.id] = collection;
+  window.CROOKFLIX_DATA = collection;
+})();
