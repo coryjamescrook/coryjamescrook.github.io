@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight Screams 2026 — Crookflix</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loading">
+  <div class="load-text">Loading Collection...</div>
+  <div class="load-bar"><div class="load-bar-inner"></div></div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- NAVIGATION -->
+<nav>
+  <a class="nav-logo" href="../index.html">CROOK<span>FLIX</span></a>
+  <div class="nav-links">
+    <a href="../index.html#upcoming">Upcoming</a>
+    <a href="../index.html#archive">Archive</a>
+  </div>
+</nav>
+
+<!-- COLLECTION HERO -->
+<header class="hero collection-hero">
+  <div class="hero-pixels" id="hero-pixels"></div>
+  <div class="collection-hero-inner">
+    <a class="back-link" href="../index.html">← BACK TO CROOKFLIX</a>
+    <span class="section-label">// CURATED SET</span>
+    <h1 class="collection-name" id="collection-name">COLLECTION</h1>
+    <p class="collection-desc" id="collection-desc"></p>
+    <div class="collection-count" id="collection-count"></div>
+  </div>
+  <div class="hero-strip"></div>
+</header>
+
+<!-- EVENTS -->
+<section class="section" id="upcoming">
+  <div class="section-header reveal">
+    <span class="section-label">// THE LINEUP</span>
+    <h2 class="section-title">Screening <span class="highlight">List</span></h2>
+  </div>
+  <div class="events-grid" id="events-grid"></div>
+  <div class="empty-state" id="events-empty" style="display:none">
+    <div class="empty-icon">▓▓</div>
+    <p>No events in this collection yet.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">CROOKFLIX</div>
+  <p class="footer-text">Home Theatre Showtimes — Est. ∞</p>
+  <div class="pixel-row" id="footer-pixels"></div>
+</footer>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="video-modal">
+  <div class="modal-box">
+    <div class="modal-close" id="modal-close">✕ CLOSE</div>
+    <iframe id="modal-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- DATA SOURCE — This collection's data lives in: ../data/collections/midnight-screams-2026.js -->
+<script src="../data/collections/midnight-screams-2026.js"></script>
+
+<script src="../app.js"></script>
+</body>
+</html>
