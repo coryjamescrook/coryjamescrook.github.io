@@ -8,28 +8,28 @@ Crookflix is a static, dependency-free website tracking home-theatre showtimes. 
 - `collections/*.html` — collection pages
 - `style.css` — shared styles, referenced from all pages (relative `../style.css` from `collections/`)
 - `app.js` — shared vanilla JS IIFE, drives every page. No external scripts or CDNs.
-- `data/*.js` — data files. Each sets `window.CROOKFLIX_DATA` before `app.js` runs (loaded via `<script src="...">` at the bottom of each HTML page):
-  - `data/home.js` — home page data, loaded by `index.html`
-  - `data/collections/<name>.js` — one file per collection page, loaded by its `collections/<name>.html`
-  - Data files are plain JS global assignments (works over `file://` and HTTP alike; no `fetch`, no modules).
+- `data/*.js` — data files, run as plain JS IIFEs (works over `file://` and HTTP alike; no `fetch`, no modules):
+  - `data/collections/<name>.js` — one per collection. Sets the collection object on `window.CROOKFLIX_DATA` (authoritative for its own page) **and** registers itself in the shared `window.CROOKFLIX_COLLECTIONS` registry keyed by collection id.
+  - `data/home.js` — home page data. Sets `window.CROOKFLIX_DATA`. Collection entries resolve their events from the `window.CROOKFLIX_COLLECTIONS` registry, so events are defined exactly once (in the collection file).
+  - Load order in `index.html`: collection files first, then `home.js`, then `app.js`. In `collections/<name>.html`: just that collection's file, then `app.js`.
 
 ## Data model (critical)
 
 All content lives in the page's data file (`data/home.js` or `data/collections/<name>.js`), which assigns `window.CROOKFLIX_DATA`. `loadSiteData()` in `app.js` reads that global (falling back to a legacy inline `#crookflix-data` JSON block if one exists). Mode is detected from the shape of the data:
 
 - **Home**: `{ "upcoming": [ ... ] }` where each item is polymorphic:
-  - `{ "kind": "event", id, title, date (YYYY-MM-DD), time (HH:MM), description, trailer? }`
-  - `{ "kind": "collection", id, title, description, page, events: [ ... ] }`
+  - `{ "kind": "event", id, title, date (YYYY-MM-DD | null), time (HH:MM | null), description, trailer? }`
+  - `{ "kind": "collection", id, page }` — minimal reference. `data/home.js` resolves `title`, `description`, and `events` from the `window.CROOKFLIX_COLLECTIONS` registry (populated by `data/collections/<name>.js`) at load time. Optional inline overrides (`title`, `description`, `events`) may be supplied but should not be needed.
     - `page` is the relative path to the collection's HTML page (e.g. `collections/midnight-screams-2026.html`)
-    - collection items on the home page **duplicate** the events that live in the collection page
+    - **Do not duplicate events in `home.js`** — the collection file is the single source of truth.
 - **Collection page**: `{ "kind": "collection", id, title, description, events: [ ... ] }` — the events array here is the authoritative copy for that collection.
 
-`app.js` renders Upcoming vs. Archive per event by comparing its date+time against the current time.
+`app.js` renders Upcoming vs. Archive per event by comparing its date+time against the current time. Ordering is always chronological ascending (date, then time) via `sortedEvents`. **TBD showtimes**: `date` and/or `time` may be `null`/`undefined` to mean the showtime is not yet decided; the card displays a `TBD` stamp (or partial `TBD` for only one of the two) in place of the real value, such events are never archived (treated as upcoming) and always sort last, tied broken alphabetically by title, and the "Add to Calendar" button is hidden for them.
 
 ### Adding content — do this in order
 
 1. Standalone event: add to `upcoming` in `data/home.js`.
-2. Collection: add a `{ kind: "collection" }` entry (with `page`) to `upcoming` in `data/home.js`, and create `collections/<name>.html` (which loads `data/collections/<name>.js`) with the full events array in that data file.
+2. Collection: create `collections/<name>.html` (which loads `data/collections/<name>.js`) with the full events array in that data file, then add a `{ "kind": "collection", id, page }` entry to `upcoming` in `data/home.js` (resolve its `id` to the collection file's `id`). Also add the collection file's `<script>` tag to `index.html` before `data/home.js`.
 3. Keep event IDs unique and stable (`evt-*` for events, `col-*` for collections).
 
 ### Removing content
