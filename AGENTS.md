@@ -8,10 +8,11 @@ Crookflix is a static, dependency-free website tracking home-theatre showtimes. 
 - `collections/*.html` — collection pages
 - `style.css` — shared styles, referenced from all pages (relative `../style.css` from `collections/`)
 - `app.js` — shared vanilla JS IIFE, drives every page. No external scripts or CDNs.
+- `session.js` — tiny shared IIFE loaded in every page's `<head>` (before body content). If the `crookflix-session-loaded` flag is already in `sessionStorage` it removes the `#loading` screen immediately, so the loader only appears on the site's first load per tab session. `app.js` sets the flag on first init.
 - `data/*.js` — data files, run as plain JS IIFEs (works over `file://` and HTTP alike; no `fetch`, no modules):
   - `data/collections/<name>.js` — one per collection. Sets the collection object on `window.CROOKFLIX_DATA` (authoritative for its own page) **and** registers itself in the shared `window.CROOKFLIX_COLLECTIONS` registry keyed by collection id.
   - `data/home.js` — home page data. Sets `window.CROOKFLIX_DATA`. Collection entries resolve their events from the `window.CROOKFLIX_COLLECTIONS` registry, so events are defined exactly once (in the collection file).
-  - Load order in `index.html`: collection files first, then `home.js`, then `app.js`. In `collections/<name>.html`: just that collection's file, then `app.js`.
+  - Load order in `index.html`: `session.js` (head), then collection files, then `home.js`, then `app.js`. In `collections/<name>.html`: `session.js` (head), then that collection's file, then `app.js`.
 
 ## Data model (critical)
 

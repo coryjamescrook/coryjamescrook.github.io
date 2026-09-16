@@ -396,10 +396,16 @@
     initProgressBar();
     initVideoModal();
 
-    // Hide loading screen
-    setTimeout(() => {
-      document.getElementById('loading').classList.add('hidden');
-    }, 1200);
+    // Hide loading screen (only on the site's first load this session)
+    try {
+      if (!sessionStorage.getItem('crookflix-session-loaded')) {
+        sessionStorage.setItem('crookflix-session-loaded', '1');
+        setTimeout(() => {
+          const loading = document.getElementById('loading');
+          if (loading) loading.classList.add('hidden');
+        }, 1200);
+      }
+    } catch (e) {}
   }
 
   // Run on DOM ready
