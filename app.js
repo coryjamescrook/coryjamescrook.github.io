@@ -113,43 +113,15 @@
     return first === last ? first : `${first} — ${last}`;
   }
 
-  // ─── CALENDAR (ICS) ──────────────────────────
-  function icsEscape(s) {
-    return (s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
-  }
-
-  function buildIcs(evt) {
-    const d = eventDateTime(evt);
-    const dt = d ? d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z' : '';
-    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    const lines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Crookflix//Showtimes//EN',
-      'BEGIN:VEVENT',
-      `UID:${evt.id || 'event'}@crookflix`,
-      `DTSTAMP:${dtstamp}`,
-      `DTSTART:${dt}`,
-      `SUMMARY:${icsEscape(evt.title)}`
-    ];
-    if (evt.description) lines.push(`DESCRIPTION:${icsEscape(evt.description)}`);
-    lines.push('END:VEVENT', 'END:VCALENDAR');
-    return lines.join('\r\n');
-  }
-
-  function downloadIcs(evt) {
-    const blob = new Blob([buildIcs(evt)], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(evt.title || 'event').replace(/[^\w\-]+/g, '-')}.ics`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
   // ─── CARD BUILDERS (shared by home + collection pages) ──
+  function renderTags(evt) {
+    const tags = (evt.tags || []).filter(t => typeof t === 'string' && t.trim());
+    if (tags.length === 0) return '';
+    return `<div class="event-tags">` +
+      tags.map(t => `<span class="event-tag">${t}</span>`).join('') +
+      `</div>`;
+  }
+
   function buildEventCard(evt, i) {
     const past = isPast(evt);
     const tbd = isTBD(evt);
@@ -166,17 +138,11 @@
           <span>📅 ${eventDateLabel(evt)}</span>
           <span>🕐 ${eventTimeLabel(evt)}</span>
         </div>
+        ${renderTags(evt)}
         <p class="event-desc">${evt.description || ''}</p>
-        <div class="event-actions">
-          ${evt.trailer ? `<button class="btn btn-primary" data-trailer="${evt.trailer}">▶ Watch Trailer</button>` : ''}
-          ${past || tbd ? '' : '<button class="btn btn-outline cal-btn">📅 Add to Calendar</button>'}
-        </div>
+        ${evt.trailer ? `<div class="event-actions"><button class="btn btn-primary" data-trailer="${evt.trailer}">▶ Watch Trailer</button></div>` : ''}
       </div>
     `;
-
-    if (!past && !tbd) {
-      card.querySelector('.cal-btn').addEventListener('click', () => downloadIcs(evt));
-    }
     return card;
   }
 

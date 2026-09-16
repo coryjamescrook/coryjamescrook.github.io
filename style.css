@@ -536,6 +536,50 @@ a.nav-logo {
   margin-bottom: 20px;
 }
 
+.event-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.event-tag {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border: 2px solid #444;
+  color: var(--text-dim);
+  background: var(--bg-alt);
+  cursor: default;
+}
+
+.event-tag:nth-child(5n+2) {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+}
+
+.event-tag:nth-child(5n+3) {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+.event-tag:nth-child(5n+4) {
+  border-color: var(--accent-4);
+  color: var(--accent-4);
+}
+
+.event-tag:nth-child(5n+5) {
+  border-color: var(--accent-5);
+  color: var(--accent-5);
+}
+
+.event-tag:hover {
+  background: var(--text);
+  color: #000;
+  border-color: var(--text);
+}
+
 .event-actions {
   display: flex;
   gap: 12px;
