@@ -18,13 +18,22 @@ Crookflix is a static, dependency-free website tracking home-theatre showtimes. 
 All content lives in the page's data file (`data/home.js` or `data/collections/<name>.js`), which assigns `window.CROOKFLIX_DATA`. `loadSiteData()` in `app.js` reads that global (falling back to a legacy inline `#crookflix-data` JSON block if one exists). Mode is detected from the shape of the data:
 
 - **Home**: `{ "upcoming": [ ... ] }` where each item is polymorphic:
-  - `{ "kind": "event", id, title, date (YYYY-MM-DD | null), time (HH:MM | null), description, trailer? }`
+  - `{ "kind": "event", id, title, datetime (ISO 8601 | null/undefined), description, trailer? }`
   - `{ "kind": "collection", id, page }` — minimal reference. `data/home.js` resolves `title`, `description`, and `events` from the `window.CROOKFLIX_COLLECTIONS` registry (populated by `data/collections/<name>.js`) at load time. Optional inline overrides (`title`, `description`, `events`) may be supplied but should not be needed.
     - `page` is the relative path to the collection's HTML page (e.g. `collections/midnight-screams-2026.html`)
     - **Do not duplicate events in `home.js`** — the collection file is the single source of truth.
 - **Collection page**: `{ "kind": "collection", id, title, description, events: [ ... ] }` — the events array here is the authoritative copy for that collection.
 
-`app.js` renders Upcoming vs. Archive per event by comparing its date+time against the current time. Ordering is always chronological ascending (date, then time) via `sortedEvents`. **TBD showtimes**: `date` and/or `time` may be `null`/`undefined` to mean the showtime is not yet decided; the card displays a `TBD` stamp (or partial `TBD` for only one of the two) in place of the real value, such events are never archived (treated as upcoming) and always sort last, tied broken alphabetically by title, and the "Add to Calendar" button is hidden for them.
+### Time model
+
+- Every event timestamp lives in a single `datetime` field as an **ISO 8601 string with an explicit UTC offset**, e.g. `"2026-10-28T20:30:00-05:00"`. `datetime` may be **omitted, `null`, or `undefined`** for unscheduled events — `app.js` renders those as **`TBD`** and the "Add to Calendar" action is hidden until a date is set.
+- Offsets use the **`America/Winnipeg`** timezone as the venue: CDT `−05:00` from March 8–Nov 1 (first Sun), CWT `−06:00` otherwise. Choose the offset matching the event's own date.
+- `app.js` parses with `new Date(datetime)` and renders date/time via the **viewer's browser-local** timezone. The `.ics` feed emits `DTSTART` in UTC (`Z`) so calendar apps localize correctly.
+- Do not reintroduce separate `date`/`time` string fields; everything flows through `datetime`.
+
+### Ordering & TBD behavior
+
+`app.js` renders Upcoming vs. Archive per event by comparing its `datetime` against the current time. Ordering is always chronological ascending via `sortedEvents`. **TBD showtimes**: `datetime` `null`/`undefined` means the showtime is not yet decided; `isTBD(evt)` reports these, they display a `TBD` stamp in place of the real value, are never archived (treated as upcoming), always sort last (tied broken alphabetically by title), and hide the "Add to Calendar" button.
 
 ### Adding content — do this in order
 
@@ -38,7 +47,7 @@ All content lives in the page's data file (`data/home.js` or `data/collections/<
 
 ## Conventions
 
-- **Dates**: ISO `YYYY-MM-DD`. **Times**: 24h `HH:MM`.
+- **Dates**: single `datetime` ISO 8601 field with an explicit `America/Winnipeg` UTC offset (see "Time model").
 - **Trailers**: bare YouTube video IDs; playback is via a YouTube iframe modal driven by `data-trailer` attributes.
 - **Styling**: use the existing CSS custom properties in `style.css` (`--accent-1` … `--accent-5`, etc.). Do not introduce a CSS framework.
 - **JS style**: IIFE, strict mode, helper functions at the top, no modules, no imports.
@@ -57,7 +66,7 @@ All content lives in the page's data file (`data/home.js` or `data/collections/<
 
 - A preference or style rule changes (tone, naming, color palette, JS conventions, date/time formats).
 - Architecture or data-model changes (new fields, new file types, new build steps, dependency additions/removals).
-- The meaning of any identifier used above (`window.CROOKFLIX_DATA`, legacy `#crookflix-data`, `page`, `kind`, event/collection IDs) changes.
+- The meaning of any identifier used above (`window.CROOKFLIX_DATA`, legacy `#crookflix-data`, `page`, `kind`, `datetime`, event/collection IDs) changes.
 - New files or directories are added or removed at the top level.
 
 The goal: a future agent or human reading this file should not be surprised by the state of the repo.
