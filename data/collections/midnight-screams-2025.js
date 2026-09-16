@@ -16,6 +16,7 @@
       "title": "MadS",
       "description": "A teenager stops off to see his dealer to test a new drug before heading off for a night of partying. On the way home, he picks up an injured woman and the night takes a surreal turn.",
       "trailer": "Vm6_MDnj3Hg",
+      "tags": ["Horror", "Surreal", "Thriller"],
       "datetime": "2025-09-20T21:00:00-05:00"
     },
     {
@@ -23,6 +24,7 @@
       "title": "The Lighthouse",
       "description": "Two lighthouse keepers try to maintain their sanity while living on a remote and mysterious New England island in the 1890s.",
       "trailer": "Hyag7lR8CPA",
+      "tags": ["Horror", "Psychological", "Period"],
       "datetime": "2025-09-24T21:00:00-05:00"
     },
     {
@@ -30,6 +32,7 @@
       "title": "In A Violent Nature",
       "description": "When a locket is removed from a collapsed fire tower in the woods that entombs the rotting corpse of Johnny, a vengeful spirit spurred on by a horrific 70-year old crime, his body is resurrected and becomes hellbent on retrieving it.",
       "trailer": "WyXuRmXbS7U",
+      "tags": ["Horror", "Slasher", "Supernatural"],
       "datetime": "2025-09-26T21:00:00-05:00"
     },
     {
@@ -37,6 +40,7 @@
       "title": "Sinners",
       "description": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
       "trailer": "bKGxHflevuk",
+      "tags": ["Horror", "Southern Gothic", "Supernatural"],
       "datetime": "2025-09-28T21:00:00-05:00"
     },
     {
@@ -44,6 +48,7 @@
       "title": "28 Years Later",
       "description": "A group of survivors of the rage virus live on a small island. When one of the group leaves the island on a mission into the mainland, he discovers secrets, wonders, and horrors that have mutated not only the infected but other survivors.",
       "trailer": "mcvLKldPM08",
+      "tags": ["Horror", "Zombie", "Post-Apocalyptic"],
       "datetime": "2025-10-02T21:00:00-05:00"
     },
     {
@@ -51,6 +56,7 @@
       "title": "Coherence",
       "description": "Strange things begin to happen when a group of friends gather for a dinner party on an evening when a comet is passing overhead.",
       "trailer": "kxAOewNzz-8",
+      "tags": ["Horror", "Sci-Fi", "Mystery"],
       "datetime": "2025-10-03T21:00:00-05:00"
     },
     {
@@ -58,6 +64,7 @@
       "title": "The Long Walk",
       "description": "A group of teenage boys compete in an annual contest known as \"The Long Walk\", in which they must maintain a certain walking speed or get shot.",
       "trailer": "vAtUHeMQ1F8",
+      "tags": ["Thriller", "Survival", "Dystopian"],
       "datetime": "2025-10-17T21:00:00-05:00"
     },
     {
@@ -65,6 +72,7 @@
       "title": "Weapons",
       "description": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
       "trailer": "OpThntO9ixc",
+      "tags": ["Horror", "Thriller", "Mystery"],
       "datetime": "2025-10-18T21:00:00-05:00"
     },
     {
@@ -72,6 +80,7 @@
       "title": "Black Box",
       "description": "After losing his wife and his memory in a car accident, a single father undergoes an agonizing experimental treatment that causes him to question who he really is.",
       "trailer": "nj6JIzrIzxk",
+      "tags": ["Horror", "Sci-Fi", "Psychological"],
       "datetime": "2025-10-23T21:00:00-05:00"
     },
     {
@@ -79,6 +88,7 @@
       "title": "Longlegs",
       "description": "In pursuit of a serial killer, an FBI agent uncovers a series of occult clues that she must solve to end his terrifying killing spree.",
       "trailer": "OG7wOTE8NhE",
+      "tags": ["Horror", "Crime", "Thriller"],
       "datetime": "2025-10-29T21:00:00-05:00"
     },
     {
@@ -86,6 +96,7 @@
       "title": "The Fly",
       "description": "A brilliant but eccentric scientist begins to transform into a giant man/fly hybrid after one of his experiments goes horribly wrong.",
       "trailer": "fj1SHpBsY7w",
+      "tags": ["Horror", "Sci-Fi", "Body-Horror"],
       "datetime": "2025-10-31T21:00:00-05:00"
     }
   ]
