@@ -127,7 +127,7 @@
     const tbd = isTBD(evt);
     const card = document.createElement('div');
     card.className = 'event-card' + (past ? ' past' : '');
-    card.style.transitionDelay = `${i * 0.1}s`;
+    card.style.transitionDelay = `${Math.min(i, 5) * 0.075}s`;
 
     card.innerHTML = `
       <div class="event-date-stamp">${tbd ? 'TBD' : eventDateLabel(evt) + (past ? ' · PAST' : '')}</div>
@@ -152,7 +152,7 @@
     const link = document.createElement('a');
     link.className = 'event-card collection-entry' + (opts.archived ? ' past' : '');
     link.href = col.page || '#';
-    link.style.transitionDelay = `${i * 0.1}s`;
+    link.style.transitionDelay = `${Math.min(i, 5) * 0.075}s`;
 
     link.innerHTML = `
       <div class="event-date-stamp">${events.length} EVENTS${opts.archived ? ' · PAST' : ''}</div>
@@ -319,9 +319,10 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    }, { threshold: 0.0125, rootMargin: '0px 0px 120px 0px' });
 
     document.querySelectorAll('.event-card, .archive-item, .reveal, .reveal-left, .reveal-scale').forEach(el => {
       observer.observe(el);
