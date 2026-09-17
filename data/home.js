@@ -2,11 +2,12 @@
 // Edit this file to change site content.
 //
 // Collection entries reference a collection by id. The authoritative data
-// (title, description, events) lives in the collection's own data file
-// (data/collections/<name>.js), loaded before this file in index.html, which
-// registers itself in window.CROOKFLIX_COLLECTIONS. This keeps every event
-// defined exactly once. A home entry may optionally override title,
-// description, or inline an explicit `events` array to diverge.
+// (title, description, events — and the slug used for routing) lives in the
+// collection's own data file under data/collections/<name>.js, loaded before
+// this file, which registers itself in window.CROOKFLIX_COLLECTIONS and
+// window.CROOKFLIX_COLLECTIONS_BY_SLUG. This keeps every event defined
+// exactly once. A home entry may optionally override title, description,
+// slug, or inline an explicit `events` array to diverge.
 window.CROOKFLIX_DATA = (function() {
   'use strict';
   const registry = window.CROOKFLIX_COLLECTIONS || {};
@@ -18,7 +19,7 @@ window.CROOKFLIX_DATA = (function() {
       id: col.id,
       title: col.title !== undefined ? col.title : src.title,
       description: col.description !== undefined ? col.description : src.description,
-      page: col.page,
+      slug: col.slug !== undefined ? col.slug : src.slug,
       events: col.events !== undefined ? col.events : (src.events || [])
     };
   }
@@ -35,13 +36,11 @@ window.CROOKFLIX_DATA = (function() {
     },
     {
       "kind": "collection",
-      "id": "col-003",
-      "page": "collections/midnight-screams-2025.html"
+      "id": "col-003"
     },
     {
       "kind": "collection",
-      "id": "col-004",
-      "page": "collections/midnight-screams-2026.html"
+      "id": "col-004"
     }
   ];
 

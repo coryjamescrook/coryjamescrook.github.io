@@ -710,6 +710,13 @@ a.event-card {
   display: block;
 }
 
+/* cx-collection-card is a custom element (not an <a>) that behaves like the
+   clickable collection-entry card; give it the same block + cursor treatment. */
+cx-collection-card {
+  display: block;
+  cursor: pointer;
+}
+
 .event-card.past {
   opacity: 0.85;
 }

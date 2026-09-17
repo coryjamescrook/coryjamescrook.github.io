@@ -1,13 +1,15 @@
 // Crookflix data — midnight-screams-2026.js
 // Edit this file to change site content.
-// Sets window.CROOKFLIX_COLLECTION (authoritative for this page) and
-// registers the collection in window.CROOKFLIX_COLLECTIONS so the home
-// page (data/home.js) can reuse the same events without duplication.
+// Registers the collection in window.CROOKFLIX_COLLECTIONS (by id) and
+// window.CROOKFLIX_COLLECTIONS_BY_SLUG (by slug — used for routing) so the
+// home page (data/home.js) reuses the same events without duplication.
 (function() {
   'use strict';
   const collection = {
   "kind": "collection",
   "id": "col-004",
+  "slug": "midnight-screams-2026",
+  "label": "// CURATED SET",
   "title": "Midnight Screams 2026",
   "description": "Thirty-one nights of dread across October 2026. One screen, one scream, every single night.",
   "events": [
@@ -159,5 +161,6 @@
 };
   window.CROOKFLIX_COLLECTIONS = window.CROOKFLIX_COLLECTIONS || {};
   window.CROOKFLIX_COLLECTIONS[collection.id] = collection;
-  window.CROOKFLIX_DATA = collection;
+  window.CROOKFLIX_COLLECTIONS_BY_SLUG = window.CROOKFLIX_COLLECTIONS_BY_SLUG || {};
+  if (collection.slug) window.CROOKFLIX_COLLECTIONS_BY_SLUG[collection.slug] = collection;
 })();
