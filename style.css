@@ -462,7 +462,7 @@ a.nav-logo {
 .event-card.visible {
   opacity: 1;
   transform: translateY(0) rotate(0deg);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .event-card:hover {
@@ -662,7 +662,7 @@ a.nav-logo {
 .collection-card.visible {
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .collection-card:hover {
@@ -708,6 +708,13 @@ a.event-card {
   text-decoration: none;
   color: inherit;
   display: block;
+}
+
+/* cx-collection-card is a custom element (not an <a>) that behaves like the
+   clickable collection-entry card; give it the same block + cursor treatment. */
+cx-collection-card {
+  display: block;
+  cursor: pointer;
 }
 
 .event-card.past {
@@ -850,7 +857,7 @@ a.event-card {
 .archive-item.visible {
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .archive-item:hover {
@@ -997,7 +1004,7 @@ footer .pixel-row span {
 .reveal {
   opacity: 0;
   transform: translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .reveal.visible {
@@ -1008,7 +1015,7 @@ footer .pixel-row span {
 .reveal-left {
   opacity: 0;
   transform: translateX(-60px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .reveal-left.visible {
@@ -1019,7 +1026,7 @@ footer .pixel-row span {
 .reveal-scale {
   opacity: 0;
   transform: scale(0.8);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .reveal-scale.visible {

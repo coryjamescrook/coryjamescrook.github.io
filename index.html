@@ -5,88 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crookflix — Home Theatre Showtimes</title>
 <link rel="stylesheet" href="style.css">
+<script src="session.js"></script>
+<script src="components.js"></script>
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
-<div class="loading-screen" id="loading">
-  <div class="load-text">Initializing Crookflix...</div>
-  <div class="load-bar"><div class="load-bar-inner"></div></div>
-</div>
+<!-- PERSISTENT CHROME (never re-created per route; each element builds its own markup) -->
+<cx-site-loader class="loading-screen" id="loading"></cx-site-loader>
+<cx-progress-bar id="progress-bar"></cx-progress-bar>
+<cx-nav></cx-nav>
 
-<!-- PROGRESS BAR -->
-<div id="progress-bar"></div>
+<!-- ROUTE VIEW (the router swaps one route at a time into this container) -->
+<main id="view">
 
-<!-- NAVIGATION -->
-<nav>
-  <div class="nav-logo">CROOK<span>FLIX</span></div>
-  <div class="nav-links">
-    <a href="#upcoming">Upcoming</a>
-    <a href="#archive">Archive</a>
+  <!-- ROUTE: #/ (home) -->
+  <div class="route" data-route="home">
+    <cx-home-hero class="hero" subtitle="HOME THEATRE SHOWTIMES" id="hero"></cx-home-hero>
+
+    <div class="marquee-wrap"><div class="marquee" id="marquee"></div></div>
+
+    <section class="section" data-sec="upcoming">
+      <div class="section-header reveal">
+        <span class="section-label">// NOW &amp; NEXT</span>
+        <h2 class="section-title">Upcoming <span class="highlight">Screenings</span></h2>
+      </div>
+      <div class="events-grid"></div>
+      <div class="empty-state" data-empty style="display:none">
+        <div class="empty-icon">▓▓</div>
+        <p>No upcoming events. Check back soon.</p>
+      </div>
+    </section>
+
+    <section class="section archive-section" data-sec="archive">
+      <div class="section-header reveal">
+        <span class="section-label">// PAST SCREENINGS</span>
+        <h2 class="section-title">The <span class="highlight">Archive</span></h2>
+      </div>
+      <div class="archive-list"></div>
+      <div class="empty-state" data-empty style="display:none">
+        <div class="empty-icon">░░</div>
+        <p>Nothing archived yet.</p>
+      </div>
+    </section>
   </div>
-</nav>
 
-<!-- HERO -->
-<header class="hero" id="hero">
-  <div class="hero-pixels" id="hero-pixels"></div>
-  <h1 class="hero-title">
-    <span class="glitch" data-text="CROOK">CROOK</span>
-    <span class="glitch" data-text="FLIX" style="color:var(--accent-2)">FLIX</span>
-  </h1>
-  <p class="hero-sub" id="hero-sub">
-    <span id="typed-text"></span><span class="cursor"></span>
-  </p>
-  <div class="scroll-indicator">▼ SCROLL TO EXPLORE ▼</div>
-</header>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee" id="marquee"></div>
-</div>
-
-<!-- UPCOMING (EVENTS + COLLECTIONS) -->
-<section class="section" id="upcoming">
-  <div class="section-header reveal">
-    <span class="section-label">// NOW & NEXT</span>
-    <h2 class="section-title">Upcoming <span class="highlight">Screenings</span></h2>
+  <!-- ROUTE: #/c/&lt;slug&gt; (collection) — hero self-renders from .data set by app.js -->
+  <div class="route" data-route="collection" style="display:none">
+    <cx-collection-hero class="hero collection-hero" data-label="// CURATED SET" data-home="#/" id="collection-hero"></cx-collection-hero>
+    <section class="section" data-sec="upcoming">
+      <div class="section-header reveal">
+        <span class="section-label">// THE LINEUP</span>
+        <h2 class="section-title">Screening <span class="highlight">List</span></h2>
+      </div>
+      <div class="events-grid"></div>
+      <div class="empty-state" data-empty style="display:none">
+        <div class="empty-icon">▓▓</div>
+        <p>No events in this collection yet.</p>
+      </div>
+    </section>
   </div>
-  <div class="events-grid" id="events-grid"></div>
-  <div class="empty-state" id="events-empty" style="display:none">
-    <div class="empty-icon">▓▓</div>
-    <p>No upcoming events. Check back soon.</p>
-  </div>
-</section>
 
-<!-- ARCHIVE -->
-<section class="section archive-section" id="archive">
-  <div class="section-header reveal">
-    <span class="section-label">// PAST SCREENINGS</span>
-    <h2 class="section-title">The <span class="highlight">Archive</span></h2>
+  <!-- ROUTE: not found -->
+  <div class="route" data-route="notfound" style="display:none">
+    <div class="empty-state" style="padding-top:220px">
+      <div class="empty-icon">▓ ▓</div>
+      <p>Collection not found</p>
+    </div>
   </div>
-  <div class="archive-list" id="archive-list"></div>
-  <div class="empty-state" id="archive-empty" style="display:none">
-    <div class="empty-icon">░░</div>
-    <p>Nothing archived yet.</p>
-  </div>
-</section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">CROOKFLIX</div>
-  <p class="footer-text">Home Theatre Showtimes — Est. 2022</p>
-  <div class="pixel-row" id="footer-pixels"></div>
-</footer>
+</main>
 
-<!-- VIDEO MODAL -->
-<div class="modal-overlay" id="video-modal">
-  <div class="modal-box">
-    <div class="modal-close" id="modal-close">✕ CLOSE</div>
-    <iframe id="modal-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-</div>
+<!-- PERSISTENT CHROME -->
+<cx-footer></cx-footer>
+<cx-video-modal></cx-video-modal>
 
-<!-- DATA SOURCE — Collection data registers in window.CROOKFLIX_COLLECTIONS;
-     home.js pulls its collection events from the registry above. -->
+<!-- DATA SOURCE — every collection file registers in window.CROOKFLIX_COLLECTIONS
+     (by id) and window.CROOKFLIX_COLLECTIONS_BY_SLUG (by slug, used for routing);
+     home.js pulls its collection events from that registry. Load order matters:
+     collection files before home.js, then app.js (defines router + renderers). -->
 <script src="data/collections/midnight-screams-2025.js"></script>
 <script src="data/collections/midnight-screams-2026.js"></script>
 <script src="data/home.js"></script>

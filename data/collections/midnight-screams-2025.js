@@ -1,13 +1,15 @@
 // Crookflix data — midnight-screams-2025.js
 // Edit this file to change site content.
-// Sets window.CROOKFLIX_COLLECTION (authoritative for this page) and
-// registers the collection in window.CROOKFLIX_COLLECTIONS so the home
-// page (data/home.js) can reuse the same events without duplication.
+// Registers the collection in window.CROOKFLIX_COLLECTIONS (by id) and
+// window.CROOKFLIX_COLLECTIONS_BY_SLUG (by slug — used for routing) so the
+// home page (data/home.js) reuses the same events without duplication.
 (function() {
   'use strict';
   const collection = {
   "kind": "collection",
   "id": "col-003",
+  "slug": "midnight-screams-2025",
+  "label": "// ARCHIVE",
   "title": "Midnight Screams 2025",
   "description": "Eleven nights of dread across late September and October 2025. Now part of the archive.",
   "events": [
@@ -103,5 +105,6 @@
 };
   window.CROOKFLIX_COLLECTIONS = window.CROOKFLIX_COLLECTIONS || {};
   window.CROOKFLIX_COLLECTIONS[collection.id] = collection;
-  window.CROOKFLIX_DATA = collection;
+  window.CROOKFLIX_COLLECTIONS_BY_SLUG = window.CROOKFLIX_COLLECTIONS_BY_SLUG || {};
+  if (collection.slug) window.CROOKFLIX_COLLECTIONS_BY_SLUG[collection.slug] = collection;
 })();
