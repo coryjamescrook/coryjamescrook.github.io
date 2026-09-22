@@ -119,7 +119,7 @@
     },
     {
       "id": "evt-ms-014",
-      "title": "Beware Boúna",
+      "title": "Beware Boiúna",
       "description": "A deep-woods Brazilian horror that follows you home long after you leave.",
       "trailer": "4fn4UcgzRhg",
       "tags": ["Folk-Horror", "International", "Woods"],
