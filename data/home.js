@@ -32,7 +32,7 @@ window.CROOKFLIX_DATA = (function() {
       "description": "A thief who steals secrets through dream-sharing is given the inverse task: planting an idea into the mind of a C.E.O.",
       "trailer": "YoHD9XEInc0",
       "tags": ["Sci-Fi", "Thriller", "Mind-Bender"],
-      "datetime": "2026-09-26T21:00:00-05:00"
+      "datetime": "2026-11-06T21:00:00-05:00"
     },
     {
       "kind": "collection",

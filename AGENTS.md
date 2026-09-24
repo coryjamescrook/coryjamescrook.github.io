@@ -6,7 +6,7 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 
 - **`index.html`** — the *single* HTML file (the SPA shell). Contains persistent chrome (loader, progress bar, nav, footer, video modal) once, a `<main id="view">` route container, and the ordered `<script>` loads. There are no longer any `collections/*.html` pages — collection pages are in-app routes rendered generically from data.
 - **`components.js`** — shared **light-DOM custom elements** (no Shadow DOM) that encapsulate markup + behavior. Loaded in `<head>` after `session.js`. Each element builds its own inner markup in `connectedCallback` (or via a setter), so it is self-contained regardless of how it is authored in HTML.
-- **`app.js`** — single vanilla JS IIFE. Owns: data loading, date/ordering helpers, the **hash router**, route renderers (mounting the `<cx-event-card>` / `<cx-collection-card>` elements and the collection hero), the scroll-reveal observer, and `window.Crookflix.goto()` used by the nav. It exposes its pure helpers on `window.CrookflixRender` for the card/hero elements to consume.
+- **`app.js`** — single vanilla JS IIFE. Owns: data loading, date/ordering helpers, the **hash router**, route renderers (mounting the `<cx-event-card>` / `<cx-day-card>` / `<cx-collection-card>` elements and the collection hero), the scroll-reveal observer, and `window.Crookflix.goto()` used by the nav. It exposes its pure helpers on `window.CrookflixRender` for the card/hero elements to consume. `renderUpcoming` groups consecutive standalone events on the same calendar day into one `<cx-day-card>` (via `groupSameDay`, which uses viewer-local date parts to match the rendered date labels); the standalone archive list is grouped the same way.
 - **`session.js`** — tiny shared IIFE loaded in `<head>` (before body content). If the `crookflix-session-loaded` flag is already in `sessionStorage` it removes the `#loading` screen immediately, so the loader only appears on the site's first load per tab session. `app.js` sets the flag on first init.
 - **`style.css`** — shared styles. Elements carry the same **class names** used before (`.event-card`, `.hero`, `.nav-logo`, `.modal-overlay`, etc.), so the existing class-based rules apply unchanged. Only two tag-scoped rules were added (`cx-collection-card { display:block; cursor:pointer }` for the non-`<a>` clickable card, and the nav/footer rely on their own class children).
 - **`data/*.js`** — data files, run as plain JS IIFEs (works over `file://` and HTTP alike; no `fetch`, no modules):
@@ -26,6 +26,7 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 | `<cx-footer>` | the `<footer>` | generates the 12 footer pixels |
 | `<cx-video-modal>` | the `#video-modal` overlay | document-wide `[data-trailer]` delegation + Escape/click-out/close; exposes `.open(id)` / `.close()`; toggles `.active` on the inner `.modal-overlay` |
 | `<cx-event-card>` | one event card | set `.event` (object) before connect; host carries `.event-card` |
+| `<cx-day-card>` | a group of 2+ events sharing the same calendar day | set `.events` (array, sorted) before connect; host carries `.event-card` + `.cx-day-card`; renders one stamp (`N EVENTS · DATE`), a `DOUBLE FEATURE`/`MULTIPLE SHOWINGS` badge, and one `.day-show` row per event (time chip, title, tags, description, trailer) |
 | `<cx-collection-card>` | one home/archive collection entry | set `.collection` (object) + `.archived` (bool); click navigates to `#/c/<slug>` |
 
 **Relocated behavior** (moved out of `app.js` into the elements above): `initProgressBar`, `initVideoModal`, `generateFooterPixels`, `generateHeroPixels`, `typeText`, and both card templates. `app.js`'s `buildEventCard`/`buildCollectionCard` are now thin wrappers that create the element and set its props.
@@ -43,7 +44,7 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 `loadSiteData()` in `app.js` reads `window.CROOKFLIX_DATA`. The home data shape and the polymorphic `upcoming` array are unchanged:
 
 - **Home** (`data/home.js`, assigned to `window.CROOKFLIX_DATA`): `{ "upcoming": [ ... ] }` where each item is:
-  - `{ "kind": "event", id, title, datetime (ISO 8601 | null/undefined), description, trailer?, tags? }` — `tags` is an optional array of short label strings rendered as chips.
+  - `{ "kind": "event", id, title, datetime (ISO 8601 | null/undefined), description, trailer?, tags?, pick? }` — `tags` is an optional array of short label strings rendered as chips. `pick` is an optional single-value enum (see **Picks** below) rendered as a star chip.
   - `{ "kind": "collection", id }` — minimal reference. `data/home.js` resolves `title`, `description`, `slug`, and `events` from the `CROOKFLIX_COLLECTIONS` registry at load time. Optional inline overrides (`title`, `description`, `slug`, `events`) may be supplied but should not be needed. **Do not duplicate events in `home.js`** — the collection file is the single source of truth.
 - **Collection** (`data/collections/<name>.js`): `{ "kind": "collection", id, slug, label?, title, description, events: [ ... ] }`. `slug` is the route identifier; `label` is the optional hero label (e.g. `// CURATED SET`, `// ARCHIVE`); `events` is the authoritative copy.
 
@@ -57,6 +58,20 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 ### Ordering & TBD behavior
 
 Upcoming vs. Archive is decided per event by comparing `datetime` against the current time. Ordering is always chronological ascending via `sortedEvents`. **TBD showtimes** (`datetime` null/undefined) display a `TBD` stamp, are never archived (treated as upcoming), and always sort last (ties broken alphabetically by title).
+
+### Picks (event recommendation indicator)
+
+Optional per-event field `pick` — one of two values, mutually exclusive (only one valid at a time):
+
+| Value | Meaning | Renders as |
+|---|---|---|
+| `"corys-pick"` | Seen before, loved it, worth the watch | solid star `★`, `--accent-2` (green) |
+| `"seems-good"` | Not seen yet, looks promising | outline star `☆`, `--accent-3` (yellow) |
+
+- Omitted/unknown → no icon (fully backward compatible).
+- Rendered by a shared `pickHtml(evt)` helper in `components.js` (a `<span class="event-pick …" data-tip="…">` chip) and placed inline next to the badge in both `<cx-event-card>` and each `.day-show` row of `<cx-day-card>`.
+- Tooltip is CSS-only: `.event-pick::after { content: attr(data-tip) }` in `style.css`, shown on `:hover, :focus` (chip has `tabindex="0"` + `aria-label` for keyboard access). The tooltip renders **below** the chip inside the card, because `.event-card` has `overflow: hidden` (an upward tooltip would be clipped at the card top).
+- Colors/letters live in the `PICKS` map at the top of `components.js`; add a new pick type there (glyph, class, tooltip text) plus a `.event-pick.<value>` color rule in `style.css`.
 
 ### Adding content — do this in order
 
