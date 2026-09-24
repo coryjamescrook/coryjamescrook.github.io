@@ -147,7 +147,7 @@
       "description": "A ballerina's obsession with the perfect performance curdles into something deadly.",
       "trailer": "5jaI1XOB-bs",
       "tags": ["Horror", "Psychological", "Thriller"],
-      "datetime": "2026-10-27T22:00:00-05:00"
+      "datetime": "2026-10-16T22:00:00-05:00"
     },
     {
       "id": "evt-ms-018",

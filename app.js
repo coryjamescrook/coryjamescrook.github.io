@@ -42,6 +42,37 @@
   function eventDateLabel(evt) { return eventDateTime(evt) ? formatDate(eventDateTime(evt)) : 'TBD'; }
   function eventTimeLabel(evt) { return eventDateTime(evt) ? formatTime(eventDateTime(evt)) : 'TBD'; }
 
+  function sameDay(a, b) {
+    const da = eventDateTime(a);
+    const db = eventDateTime(b);
+    if (!da || !db) return false;
+    return da.getFullYear() === db.getFullYear()
+      && da.getMonth() === db.getMonth()
+      && da.getDate() === db.getDate();
+  }
+
+  function groupSameDay(items) {
+    const groups = [];
+    let i = 0;
+    while (i < items.length) {
+      const item = items[i];
+      if (item && item.kind !== 'collection' && !isTBD(item)) {
+        let j = i + 1;
+        while (j < items.length
+          && items[j] && items[j].kind !== 'collection'
+          && !isTBD(items[j]) && sameDay(item, items[j])) j++;
+        if (j > i + 1) {
+          groups.push({ kind: 'day-group', events: items.slice(i, j) });
+          i = j;
+          continue;
+        }
+      }
+      groups.push({ kind: item && item.kind === 'collection' ? 'collection' : 'event', item });
+      i++;
+    }
+    return groups;
+  }
+
   function isPast(evt) {
     const d = eventDateTime(evt);
     return !!d && d < new Date();
@@ -78,12 +109,19 @@
 
   // ─── EXPOSE HELPERS TO components.js ─────────
   // components.js reads window.CrookflixRender lazily inside its custom elements.
-  window.CrookflixRender = { isTBD, dateKey, formatDate, formatTime, eventDateLabel, eventTimeLabel, isPast, sortedEvents, collectionRange };
+  window.CrookflixRender = { isTBD, dateKey, sameDay, formatDate, formatTime, eventDateLabel, eventTimeLabel, isPast, sortedEvents, collectionRange };
 
   // ─── CARD BUILDERS ───────────────────────────
   function buildEventCard(evt, i) {
     const el = document.createElement('cx-event-card');
     el.event = evt;
+    el.style.transitionDelay = `${Math.min(i, 5) * 0.075}s`;
+    return el;
+  }
+
+  function buildDayCard(events, i) {
+    const el = document.createElement('cx-day-card');
+    el.events = events;
     el.style.transitionDelay = `${Math.min(i, 5) * 0.075}s`;
     return el;
   }
@@ -128,10 +166,15 @@
     }
     if (empty) empty.style.display = 'none';
     let i = 0;
-    items.forEach(item => {
-      if (item.kind === 'collection' && !(item.events || []).some(e => !isPast(e))) return;
-      if (item.kind === 'collection') grid.appendChild(buildCollectionCard(item, i));
-      else grid.appendChild(buildEventCard(item, i));
+    groupSameDay(items).forEach(group => {
+      if (group.kind === 'collection') {
+        if (!(group.item.events || []).some(e => !isPast(e))) return;
+        grid.appendChild(buildCollectionCard(group.item, i));
+      } else if (group.kind === 'day-group') {
+        grid.appendChild(buildDayCard(group.events, i));
+      } else {
+        grid.appendChild(buildEventCard(group.item, i));
+      }
       i++;
     });
   }
@@ -161,8 +204,12 @@
       return;
     }
     if (empty) empty.style.display = 'none';
-    blocks.forEach((b, i) => list.appendChild(buildCollectionCard(b, i, { archived: true })));
-    standalone.forEach((e, i) => list.appendChild(buildEventCard(e, i + blocks.length)));
+    let i = 0;
+    blocks.forEach((b) => list.appendChild(buildCollectionCard(b, i++, { archived: true })));
+    groupSameDay(standalone).forEach(group => {
+      if (group.kind === 'day-group') list.appendChild(buildDayCard(group.events, i++));
+      else list.appendChild(buildEventCard(group.item, i++));
+    });
   }
 
   function renderHome() {

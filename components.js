@@ -264,6 +264,46 @@
     }
   }
 
+  // ─── DAY CARD (multiple events on the same day) ──
+  // Self-contained. Set .events (array, 2+) before connect. Host carries
+  // .event-card so all existing .event-card* CSS applies (including .past).
+  class CxDayCard extends HTMLElement {
+    connectedCallback() { this.render(); }
+    render() {
+      const events = this.events || [];
+      const h = R();
+      const past = h.isPast ? events.every(e => h.isPast(e)) : false;
+      this.classList.add('event-card', 'cx-day-card');
+      this.classList.toggle('past', !!past);
+      const first = events[0] || {};
+      const dateLabel = h.eventDateLabel ? h.eventDateLabel(first) : 'TBD';
+      const badge = events.length === 2 ? 'DOUBLE FEATURE' : 'MULTIPLE SHOWINGS';
+      const show = (evt) => {
+        const timeLabel = h.eventTimeLabel ? h.eventTimeLabel(evt) : 'TBD';
+        const tags = (evt.tags || []).filter(t => typeof t === 'string' && t.trim());
+        const tagsHtml = tags.length
+          ? '<div class="event-tags">' + tags.map(t => '<span class="event-tag">' + t + '</span>').join('') + '</div>'
+          : '';
+        const trailer = evt.trailer
+          ? '<div class="event-actions"><button class="btn btn-primary" data-trailer="' + evt.trailer + '">▶ Watch Trailer</button></div>'
+          : '';
+        return '<div class="day-show">' +
+          '<span class="day-show-time">🕐 ' + timeLabel + '</span>' +
+          '<h3 class="event-title">' + evt.title + '</h3>' +
+          tagsHtml +
+          '<p class="event-desc">' + (evt.description || '') + '</p>' +
+          trailer +
+        '</div>';
+      };
+      this.innerHTML =
+        '<div class="event-date-stamp">' + events.length + ' EVENTS · ' + dateLabel + (past ? ' · PAST' : '') + '</div>' +
+        '<div class="event-card-inner">' +
+          '<span class="event-badge">' + badge + '</span>' +
+          events.map(show).join('') +
+        '</div>';
+    }
+  }
+
   // ─── COLLECTION CARD ─────────────────────────
   // Home / archive entry. Host carries .event-card + .collection-entry.
   // Clicking anywhere on the card navigates to #/c/<slug>.
@@ -315,5 +355,6 @@
   def('cx-footer', CxFooter);
   def('cx-video-modal', CxVideoModal);
   def('cx-event-card', CxEventCard);
+  def('cx-day-card', CxDayCard);
   def('cx-collection-card', CxCollectionCard);
 })();

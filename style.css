@@ -640,6 +640,41 @@ a.nav-logo {
 }
 
 /* ═══════════════════════════════════════════
+    DAY CARD (multiple events, same day)
+    ═══════════════════════════════════════════ */
+cx-day-card {
+  display: block;
+}
+
+.day-show {
+  margin-bottom: 24px;
+}
+
+.day-show:last-child {
+  margin-bottom: 4px;
+}
+
+.day-show:not(:last-child) {
+  border-bottom: 2px dashed #333;
+  padding-bottom: 20px;
+}
+
+.cx-day-card .event-badge {
+  margin-right: 92px;
+}
+
+.day-show-time {
+  display: inline-block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  border: 2px solid var(--accent-4);
+  color: var(--accent-4);
+  margin-bottom: 10px;
+}
+
+/* ═══════════════════════════════════════════
    COLLECTIONS
    ═══════════════════════════════════════════ */
 .collections-grid {
