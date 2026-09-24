@@ -119,10 +119,10 @@
     },
     {
       "id": "evt-ms-014",
-      "title": "Beware Boiúna",
-      "description": "A deep-woods Brazilian horror that follows you home long after you leave.",
-      "trailer": "4fn4UcgzRhg",
-      "tags": ["Folk-Horror", "International", "Woods"],
+      "title": "Honey Bunch",
+      "description": "A quiet small-town life shatters when the new neighbor next door moves in.",
+      "trailer": "2SqWRpoUGAk",
+      "tags": ["Horror", "Psychological", "Slow-Burn"],
       // "datetime": "2026-10-22T22:00:00-05:00"
     },
     {
@@ -143,18 +143,18 @@
     },
     {
       "id": "evt-ms-017",
-      "title": "NEVER AFTER DARK",
-      "description": "Whatever you're running from, it's faster in the dark.",
-      "trailer": "--WOJMPhX7A",
-      "tags": ["Horror", "Slasher", "Night"],
+      "title": "Black Swan",
+      "description": "A ballerina's obsession with the perfect performance curdles into something deadly.",
+      "trailer": "5jaI1XOB-bs",
+      "tags": ["Horror", "Psychological", "Thriller"],
       // "datetime": "2026-10-27T20:00:00-05:00"
     },
     {
       "id": "evt-ms-018",
-      "title": "FAMILY",
-      "description": "Your own home is the trap. A 4K showcase of pure domestic dread.",
-      "trailer": "GF9VEzJfELg",
-      "tags": ["Horror", "4K", "Domestic"],
+      "title": "Night of the Living Dead (1968)",
+      "description": "The dead rise after dark, and a farmhouse becomes the last stand against them.",
+      "trailer": "o7xO_ciIEeA",
+      "tags": ["Horror", "Zombies", "Classic"],
       // "datetime": "2026-10-28T20:30:00-05:00"
     }
   ]
