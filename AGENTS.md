@@ -44,7 +44,7 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 `loadSiteData()` in `app.js` reads `window.CROOKFLIX_DATA`. The home data shape and the polymorphic `upcoming` array are unchanged:
 
 - **Home** (`data/home.js`, assigned to `window.CROOKFLIX_DATA`): `{ "upcoming": [ ... ] }` where each item is:
-  - `{ "kind": "event", id, title, datetime (ISO 8601 | null/undefined), description, trailer?, tags? }` — `tags` is an optional array of short label strings rendered as chips.
+  - `{ "kind": "event", id, title, datetime (ISO 8601 | null/undefined), description, trailer?, tags?, pick? }` — `tags` is an optional array of short label strings rendered as chips. `pick` is an optional single-value enum (see **Picks** below) rendered as a star chip.
   - `{ "kind": "collection", id }` — minimal reference. `data/home.js` resolves `title`, `description`, `slug`, and `events` from the `CROOKFLIX_COLLECTIONS` registry at load time. Optional inline overrides (`title`, `description`, `slug`, `events`) may be supplied but should not be needed. **Do not duplicate events in `home.js`** — the collection file is the single source of truth.
 - **Collection** (`data/collections/<name>.js`): `{ "kind": "collection", id, slug, label?, title, description, events: [ ... ] }`. `slug` is the route identifier; `label` is the optional hero label (e.g. `// CURATED SET`, `// ARCHIVE`); `events` is the authoritative copy.
 
@@ -58,6 +58,20 @@ Crookflix is a static, dependency-free **single-page application** tracking home
 ### Ordering & TBD behavior
 
 Upcoming vs. Archive is decided per event by comparing `datetime` against the current time. Ordering is always chronological ascending via `sortedEvents`. **TBD showtimes** (`datetime` null/undefined) display a `TBD` stamp, are never archived (treated as upcoming), and always sort last (ties broken alphabetically by title).
+
+### Picks (event recommendation indicator)
+
+Optional per-event field `pick` — one of two values, mutually exclusive (only one valid at a time):
+
+| Value | Meaning | Renders as |
+|---|---|---|
+| `"corys-pick"` | Seen before, loved it, worth the watch | solid star `★`, `--accent-2` (green) |
+| `"seems-good"` | Not seen yet, looks promising | outline star `☆`, `--accent-3` (yellow) |
+
+- Omitted/unknown → no icon (fully backward compatible).
+- Rendered by a shared `pickHtml(evt)` helper in `components.js` (a `<span class="event-pick …" data-tip="…">` chip) and placed inline next to the badge in both `<cx-event-card>` and each `.day-show` row of `<cx-day-card>`.
+- Tooltip is CSS-only: `.event-pick::after { content: attr(data-tip) }` in `style.css`, shown on `:hover, :focus` (chip has `tabindex="0"` + `aria-label` for keyboard access). The tooltip renders **below** the chip inside the card, because `.event-card` has `overflow: hidden` (an upward tooltip would be clipped at the card top).
+- Colors/letters live in the `PICKS` map at the top of `components.js`; add a new pick type there (glyph, class, tooltip text) plus a `.event-pick.<value>` color rule in `style.css`.
 
 ### Adding content — do this in order
 

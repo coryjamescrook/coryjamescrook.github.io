@@ -12,6 +12,20 @@
   // Shared color palette (mirrors style.css --accent-*).
   var PALETTE = ['var(--accent-1)', 'var(--accent-2)', 'var(--accent-3)', 'var(--accent-4)', 'var(--accent-5)'];
 
+  // ─── PICK ICON ────────────────────────────────
+  // Event `pick` field: "corys-pick" | "seems-good" | omitted.
+  // Renders a small star chip (solid = seen & loved, outline = untried) whose
+  // CSS tooltip (style.css, .event-pick::after) carries the meaning.
+  var PICKS = {
+    'corys-pick': { glyph: '\u2605', cls: 'corys-pick', tip: "Seen it, loved it. Worth the watch." },
+    'seems-good': { glyph: '\u2606', cls: 'seems-good', tip: 'Not seen yet, but looks promising.' }
+  };
+  function pickHtml(evt) {
+    const pick = PICKS[evt && evt.pick];
+    if (!pick) return '';
+    return '<span class="event-pick ' + pick.cls + '" tabindex="0" data-tip="' + pick.tip + '" aria-label="' + pick.tip + '">' + pick.glyph + '</span>';
+  }
+
   // ─── SITE LOADER ──────────────────────────────
   // Host carries class="loading-screen" (the full-screen panel styles). Hidden by
   // session.js (session flag) or app.js (first-load timer) via .hidden / .remove().
@@ -245,14 +259,15 @@
       const tagsHtml = tags.length
         ? '<div class="event-tags">' + tags.map(t => '<span class="event-tag">' + t + '</span>').join('') + '</div>'
         : '';
-      const trailer = evt.trailer
-        ? '<div class="event-actions"><button class="btn btn-primary" data-trailer="' + evt.trailer + '">▶ Watch Trailer</button></div>'
-        : '';
-      this.innerHTML =
-        '<div class="event-date-stamp">' + (tbd ? 'TBD' : dateLabel + (past ? ' · PAST' : '')) + '</div>' +
-        '<div class="event-card-inner">' +
-          '<span class="event-badge">' + (evt.type || 'MOVIE').toUpperCase() + '</span>' +
-          '<h3 class="event-title">' + evt.title + '</h3>' +
+       const trailer = evt.trailer
+         ? '<div class="event-actions"><button class="btn btn-primary" data-trailer="' + evt.trailer + '">▶ Watch Trailer</button></div>'
+         : '';
+       const pick = pickHtml(evt);
+       this.innerHTML =
+         '<div class="event-date-stamp">' + (tbd ? 'TBD' : dateLabel + (past ? ' · PAST' : '')) + '</div>' +
+         '<div class="event-card-inner">' +
+           '<span class="event-badge">' + (evt.type || 'MOVIE').toUpperCase() + '</span>' + pick +
+           '<h3 class="event-title">' + evt.title + '</h3>' +
           '<div class="event-meta">' +
             '<span>📅 ' + dateLabel + '</span>' +
             '<span>🕐 ' + timeLabel + '</span>' +
@@ -287,9 +302,9 @@
         const trailer = evt.trailer
           ? '<div class="event-actions"><button class="btn btn-primary" data-trailer="' + evt.trailer + '">▶ Watch Trailer</button></div>'
           : '';
-        return '<div class="day-show">' +
-          '<span class="day-show-time">🕐 ' + timeLabel + '</span>' +
-          '<h3 class="event-title">' + evt.title + '</h3>' +
+         return '<div class="day-show">' +
+           '<span class="day-show-time">🕐 ' + timeLabel + '</span>' + pickHtml(evt) +
+           '<h3 class="event-title">' + evt.title + '</h3>' +
           tagsHtml +
           '<p class="event-desc">' + (evt.description || '') + '</p>' +
           trailer +

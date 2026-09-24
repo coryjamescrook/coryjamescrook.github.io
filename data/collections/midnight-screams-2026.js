@@ -19,7 +19,8 @@
       "description": "Professor Se Jeong attends a biotech conference, only to witness it spiral into catastrophe when a rapidly mutating virus is unleashed. As the outbreak spreads and the infected begin to transform, authorities seal off the entire facility.",
       "trailer": "xQAXT17Jz18",
       "tags": ["Horror", "Sci-Fi", "Slow-Burn"],
-      "datetime": "2026-10-23T21:00:00-05:00"
+      "datetime": "2026-10-23T21:00:00-05:00",
+      "pick": "seems-good"
     },
     {
       "id": "evt-ms-002",
@@ -75,7 +76,8 @@
       "description": "A widow and her son face the monster living at the bottom of the house.",
       "trailer": "uLdqc4SFVsA",
       "tags": ["Horror", "Psychological", "Domestic"],
-      "datetime": "2026-10-16T20:00:00-05:00"
+      "datetime": "2026-10-16T20:00:00-05:00",
+      "pick": "corys-pick"
     },
     {
       "id": "evt-ms-009",
@@ -83,7 +85,8 @@
       "description": "An atmospheric A24 slow-burn that hums quietly and strikes hard.",
       "trailer": "j6uDeBYDHu4",
       "tags": ["A24", "Slow-Burn", "Atmospheric"],
-      "datetime": "2026-10-18T21:00:00-05:00"
+      "datetime": "2026-10-18T21:00:00-05:00",
+      "pick": "seems-good"
     },
     {
       "id": "evt-ms-010",
@@ -107,7 +110,8 @@
       "description": "Lost between the walls of a labyrinthine void with no exit.",
       "trailer": "0HjdiohVOik",
       "tags": ["Horror", "Sci-Fi", "Urban-Legend"],
-      "datetime": "2026-10-10T22:00:00-05:00"
+      "datetime": "2026-10-10T22:00:00-05:00",
+      "pick": "corys-pick"
     },
     {
       "id": "evt-ms-013",
@@ -115,7 +119,8 @@
       "description": "A relentless predator stalks its victim through the night, and every escape only tightens the grip.",
       "trailer": "gMC8kkwbIQQ",
       "tags": ["Horror", "Slasher", "Thriller"],
-      "datetime": "2026-10-10T20:00:00-05:00"
+      "datetime": "2026-10-10T20:00:00-05:00",
+      "pick": "seems-good"
     },
     {
       "id": "evt-ms-014",
@@ -139,7 +144,8 @@
       "description": "A loyal friend turns out to be the most dangerous thing in the house.",
       "trailer": "O1fNEHX9tSM",
       "tags": ["Horror", "Psychological", "Animals"],
-      "datetime": "2026-10-30T21:00:00-05:00"
+      "datetime": "2026-10-30T21:00:00-05:00",
+      "pick": "seems-good"
     },
     {
       "id": "evt-ms-017",
@@ -147,7 +153,8 @@
       "description": "A ballerina's obsession with the perfect performance curdles into something deadly.",
       "trailer": "5jaI1XOB-bs",
       "tags": ["Horror", "Psychological", "Thriller"],
-      "datetime": "2026-10-16T22:00:00-05:00"
+      "datetime": "2026-10-16T22:00:00-05:00",
+      "pick": "corys-pick"
     },
     {
       "id": "evt-ms-018",
@@ -155,7 +162,8 @@
       "description": "The dead rise after dark, and a farmhouse becomes the last stand against them.",
       "trailer": "o7xO_ciIEeA",
       "tags": ["Horror", "Zombies", "Classic"],
-      "datetime": "2026-10-31T22:00:00-05:00"
+      "datetime": "2026-10-31T22:00:00-05:00",
+      "pick": "corys-pick"
     }
   ]
 };
