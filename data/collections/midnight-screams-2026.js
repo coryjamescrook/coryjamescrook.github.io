@@ -124,10 +124,10 @@
     },
     {
       "id": "evt-ms-014",
-      "title": "Honey Bunch",
-      "description": "A quiet small-town life shatters when the new neighbor next door moves in.",
-      "trailer": "2SqWRpoUGAk",
-      "tags": ["Horror", "Psychological", "Slow-Burn"],
+      "title": "We Bury the Dead",
+      "description": "After a military catastrophe leaves Tasmania filled with partially reanimated corpses, a volunteer searching for her missing husband abandons recovery operations and travels south through isolated communities collapsing beneath guilt.",
+      "trailer": "_UKTj9WLdxg",
+      "tags": ["Horror", "Zombies", "Monster"],
       "datetime": "2026-10-26T21:00:00-05:00"
     },
     {
