@@ -110,7 +110,7 @@
       "description": "Lost between the walls of a labyrinthine void with no exit.",
       "trailer": "0HjdiohVOik",
       "tags": ["Horror", "Sci-Fi", "Urban-Legend"],
-      "datetime": "2026-10-10T22:00:00-05:00",
+      "datetime": "2026-10-10T20:00:00-05:00",
       "pick": "corys-pick"
     },
     {
@@ -119,7 +119,7 @@
       "description": "A relentless predator stalks its victim through the night, and every escape only tightens the grip.",
       "trailer": "gMC8kkwbIQQ",
       "tags": ["Horror", "Slasher", "Thriller"],
-      "datetime": "2026-10-10T20:00:00-05:00",
+      "datetime": "2026-10-10T22:00:00-05:00",
       "pick": "seems-good"
     },
     {
