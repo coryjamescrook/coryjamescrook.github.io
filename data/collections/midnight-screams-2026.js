@@ -132,10 +132,10 @@
     },
     {
       "id": "evt-ms-015",
-      "title": "Hollow Trees",
-      "description": "The woods around the house are hollow, and something lives in the rings.",
-      "trailer": "Gs5fzezdhvM",
-      "tags": ["Folk-Horror", "Supernatural", "Rural"],
+      "title": "Heretic",
+      "description": "Two young missionary women are trapped in a deadly game of cat-and-mouse.",
+      "trailer": "O9i2vmFhSSY",
+      "tags": ["Chamber-Horror", "Religious", "Psychological"],
       "datetime": "2026-10-24T19:00:00-05:00"
     },
     {
